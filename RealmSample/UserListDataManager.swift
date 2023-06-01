@@ -17,8 +17,10 @@ class UserListDataManager {
     
     weak var delegate: DataManagerDelegate?
     
-    let realm = try! Realm()
+    let realm = try! Realm(configuration: Realm.Configuration(deleteRealmIfMigrationNeeded: true))
     var notificationToken: NotificationToken?
+    
+    let colors: [UIColor] = [.systemYellow, .systemGray6, .systemGreen, .systemBlue]
     
     var users: Results<User>?
     
@@ -31,6 +33,7 @@ class UserListDataManager {
         let user = User()
         user.name = name
         user.age = age
+        user.color = colors.randomElement()
         
         try! realm.write {
             realm.add(user)

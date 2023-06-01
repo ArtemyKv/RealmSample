@@ -100,6 +100,7 @@ extension UserListViewController: UITableViewDataSource, UITableViewDelegate {
         config.text = user.name
         config.secondaryText = "\(user.age)"
         cell.contentConfiguration = config
+        cell.backgroundColor = user.color
         return cell
     }
     

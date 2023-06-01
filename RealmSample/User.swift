@@ -11,7 +11,17 @@ class User: Object {
     @Persisted (primaryKey: true) var _id: ObjectId
     @Persisted var name: String = ""
     @Persisted var age: Int = 0
+    @Persisted private var colorHex: Int?
     @Persisted var devices: List<Device>
+    
+    var color: UIColor? {
+        get {
+            return colorHex != nil ? UIColor(rgb: colorHex!) : nil
+        }
+        set {
+            colorHex = newValue?.rgb()
+        }
+    }
 }
 
 class Device: Object {
