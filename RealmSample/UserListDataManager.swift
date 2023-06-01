@@ -44,16 +44,10 @@ class UserListDataManager {
         }
     }
     
-    func sampleUsers() {
-//        let user1 = User(value: ["name": "Artem", "age": 32] as [String : Any])
-        
-        let user1 = User()
-        user1.age = 32
-        user1.name = "Artem"
-        
-        try! realm.write {
-            realm.add(user1)
-        }
+    func updateSorting(ascending: Bool) {
+        users = users?.sorted(byKeyPath: "age", ascending: ascending)
+        notificationToken?.invalidate()
+        setupObservers()
     }
     
     func deleteAll() {

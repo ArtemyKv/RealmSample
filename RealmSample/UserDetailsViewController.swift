@@ -36,6 +36,7 @@ class UserDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         userDetailsView.configure(with: dataManager.username, age: dataManager.userAge)
+        userDetailsView.delegate = self
         setupBarButton()
         dataManager.delegate = self
         dataManager.addObservers()
@@ -98,6 +99,18 @@ extension UserDetailsViewController: DataManagerDelegate {
             devicesTableView.insertRows(at: insertions.map({IndexPath(item: $0, section: 0)}), with: .automatic)
             devicesTableView.reloadRows(at: modifications.map({IndexPath(item: $0, section: 0)}), with: .automatic)
         }
+    }
+}
+
+extension UserDetailsViewController: UserDetailsViewDelegate {
+    func nameTextFieldDidEndEditing(with text: String) {
+        let username = text.isEmpty ? "No name" : text
+        dataManager.updateUsername(username)
+    }
+    
+    func ageTextFieldDidEndEditing(with text: String) {
+        guard let age = Int(text) else { return }
+        dataManager.updateAge(age)
     }
     
     

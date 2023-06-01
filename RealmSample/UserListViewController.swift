@@ -20,6 +20,8 @@ class UserListViewController: UIViewController {
         return userListView.tableView
     }
     
+    var listAscending: Bool = true
+    
     override func loadView() {
         let userListView = UserListView()
         self.view = userListView
@@ -31,16 +33,19 @@ class UserListViewController: UIViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "TableViewCell")
         tableView.dataSource = self
         tableView.delegate = self
-        setupBarButton()
+        setupBarButtons()
         dataManager.delegate = self
 //        dataManager.deleteAll()
         dataManager.loadUsers()
         dataManager.setupObservers()
     }
     
-    func setupBarButton() {
+    func setupBarButtons() {
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
-        self.navigationItem.rightBarButtonItem = addButton
+        
+        let sortButton = UIBarButtonItem(image: UIImage(systemName: "arrow.down"), style: .plain, target: self, action: #selector(sortButtonTapped))
+        
+        self.navigationItem.rightBarButtonItems = [sortButton, addButton]
     }
     
     @objc private func addButtonTapped() {
@@ -72,6 +77,13 @@ class UserListViewController: UIViewController {
         alert.addAction(addAction)
         alert.addAction(cancelAction)
         self.present(alert, animated: true)
+    }
+    
+    @objc private func sortButtonTapped(_ sender: UIBarButtonItem) {
+        listAscending.toggle()
+        dataManager.updateSorting(ascending: listAscending)
+        let image = UIImage(systemName: listAscending ? "arrow.down" : "arrow.up")
+        sender.image = image
     }
     
 }

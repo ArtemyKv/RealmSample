@@ -8,12 +8,19 @@
 import UIKit
 import SnapKit
 
+protocol UserDetailsViewDelegate: AnyObject {
+    func nameTextFieldDidEndEditing(with text: String)
+    func ageTextFieldDidEndEditing(with text: String)
+}
+
 class UserDetailsView: UIView {
 //    let userImageVIew: UIImageView = {
 //        let imageView = UIImageView()
 //
 //        return imageView
 //    }()
+    
+    weak var delegate: UserDetailsViewDelegate?
     
     let nameLabel: UILabel = {
         let label = UILabel()
@@ -60,7 +67,8 @@ class UserDetailsView: UIView {
     let ageTextField: UITextField = {
         let textField = UITextField()
         textField.textAlignment = .left
-        textField.placeholder = "Enter First Name"
+        textField.keyboardType = .numberPad
+        textField.placeholder = "Enter Age"
         return textField
     }()
     
@@ -120,11 +128,37 @@ class UserDetailsView: UIView {
             make.horizontalEdges.equalToSuperview()
             make.bottom.equalToSuperview()
         }
+        
+        nameTextField.delegate = self
+        ageTextField.delegate = self
     }
     
     func configure(with username: String, age: Int) {
         nameTextField.text = username
         ageTextField.text = String(age)
     }
+    
+}
+
+extension UserDetailsView: UITextFieldDelegate {
+    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
+        guard let text = textField.text else { return }
+        if reason == .committed {
+            switch textField {
+            case nameTextField:
+                delegate?.nameTextFieldDidEndEditing(with: text)
+            case ageTextField:
+                delegate?.ageTextFieldDidEndEditing(with: text)
+            default:
+                break
+            }
+        }
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.endEditing(true)
+        return true
+    }
+    
     
 }
